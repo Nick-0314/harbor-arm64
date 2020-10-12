@@ -1,5 +1,9 @@
 # harbor基于arm64平台构建v1.10版本镜像
 
+This repo is forked form goharbor/harbor. It's based on v1.10.0 to modify.Run and tested on arm64.
+
+在华为云鲲鹏计算云服务器  CentOS：7.6上测试通过
+
 ## 变更
 
 Makefile
