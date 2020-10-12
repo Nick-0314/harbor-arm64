@@ -3,7 +3,7 @@ FROM golang:1.12.12
 ADD .   /go/src/github.com/quay/clair/
 WORKDIR /go/src/github.com/quay/clair/
 
-ENV GOPROXY="http://172.26.1.9:5000"
+ENV GOPROXY="https://goproxy.cn,direct"
 ENV GOSUMDB="off"
 ENV CGO_ENABLED="0"
 RUN export CLAIR_VERSION=$(git describe --tag --always --dirty) GO111MODULE=on && \
