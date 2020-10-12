@@ -58,7 +58,7 @@ RUN yum install -y redis && yum clean all
 
 修改clair的dumb-init为arm64架构
 
-
+## 使用
 
 build基础镜像
 
