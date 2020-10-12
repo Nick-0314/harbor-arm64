@@ -1,0 +1,50 @@
+# This workflow will build a docker container, publish and deploy it to Tencent Kubernetes Engine (TKE).
+#
+# To configure this workflow:
+#
+# 1. Ensure that your repository contains the necessary configuration for your Tencent Kubernetes Engine cluster, 
+#    including deployment.yml, kustomization.yml, service.yml, etc.
+#
+# 2. Set up secrets in your workspace: 
+#    - TENCENT_CLOUD_SECRET_ID with Tencent Cloud secret id
+#    - TENCENT_CLOUD_SECRET_KEY with Tencent Cloud secret key 
+#    - TENCENT_CLOUD_ACCOUNT_ID with Tencent Cloud account id
+#    - TKE_REGISTRY_PASSWORD with TKE registry password
+#
+# 3. Change the values for the TKE_IMAGE_URL, TKE_REGION, TKE_CLUSTER_ID and DEPLOYMENT_NAME environment variables (below).
+
+name: Tencent Kubernetes Engine
+
+on:
+  release:
+    types: [created]
+
+# Environment variables available to all jobs and steps in this workflow
+env:
+  TKE_IMAGE_URL: ccr.ccs.tencentyun.com/demo/mywebapp
+  TKE_REGION: ap-guangzhou
+  TKE_CLUSTER_ID: cls-mywebapp
+  DEPLOYMENT_NAME: tke-test
+
+jobs:
+  setup-build-publish-deploy:
+    name: Setup, Build, Publish, and Deploy
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Checkout
+      uses: actions/checkout@v2
+      
+    # Build
+    - name: Build Docker image
+      run: |        
+        make build_base_docker
+
+    - name: Login TKE Registry
+      run: |
+        make build
+
+    # Push the Docker image to TKE Registry
+    - name: Publish
+      run: |
+        make package_offline
