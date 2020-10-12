@@ -1,0 +1,4 @@
+FROM centos:7
+
+COPY ./make/photon/redis/epel.repo /etc/yum.repos.d/
+RUN yum install -y redis && yum clean all

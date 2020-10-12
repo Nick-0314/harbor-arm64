@@ -1,0 +1,82 @@
+<clr-modal [(clrModalOpen)]="createProjectOpened" [clrModalStaticBackdrop]="staticBackdrop" [clrModalClosable]="closable">
+    <h3 class="modal-title">{{'PROJECT.NEW_PROJECT' | translate}}</h3>
+    <div class="modal-body modal-height">
+        <inline-alert></inline-alert>
+        <form #projectForm="ngForm" class="clr-form clr-form-horizontal">
+            <div class="clr-form-control">
+                <label class="required clr-control-label">{{'PROJECT.NAME' | translate}}</label>
+                <div class="clr-control-container" [class.clr-error]="!isNameValid">
+                    <div class="clr-input-wrapper">
+                        <input type="text" id="create_project_name" [(ngModel)]="project.name" name="create_project_name" class="clr-input input-width"
+                               required pattern="^[a-z0-9]+(?:[._-][a-z0-9]+)*$" #projectName autocomplete="off">
+                        <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                        <span class="spinner spinner-inline" [hidden]="!checkOnGoing"></span>
+                    </div>
+                    <clr-control-error *ngIf="!isNameValid" class="tooltip-content">
+                        {{ nameTooltipText | translate }}
+                    </clr-control-error>
+                </div>
+            </div>
+            <clr-checkbox-container>
+                <label class="form-group-label-override">{{'PROJECT.ACCESS_LEVEL' | translate}}
+                    <clr-tooltip>
+                        <clr-icon clrTooltipTrigger shape="info-circle" size="24"></clr-icon>
+                        <clr-tooltip-content clrPosition="bottom-left" clrSize="lg" *clrIfOpen>
+                            <span>{{'PROJECT.INLINE_HELP_PUBLIC' | translate }}</span>
+                        </clr-tooltip-content>
+                    </clr-tooltip>
+                </label>
+                <clr-checkbox-wrapper>
+                    <input clrCheckbox type="checkbox" id="create_project_public" [(ngModel)]="project.metadata.public" name="public">
+                    <label>{{ 'PROJECT.PUBLIC' | translate}}</label>
+                </clr-checkbox-wrapper>
+            </clr-checkbox-container>
+            <clr-input-container *ngIf="isSystemAdmin">
+                <label for="create_project_count_limit" class="required">{{'PROJECT.COUNT_QUOTA' | translate}}
+                    <clr-tooltip>
+                        <clr-icon clrTooltipTrigger shape="info-circle" size="24"></clr-icon>
+                        <clr-tooltip-content clrPosition="bottom-left" clrSize="lg" *clrIfOpen>
+                            <span>{{'PROJECT.QUOTA_UNLIMIT_TIP' | translate }}</span>
+                        </clr-tooltip-content>
+                    </clr-tooltip>
+                </label>
+                <input clrInput type="text" id="create_project_count_limit" [(ngModel)]="countLimit" name="create_project_count_limit" class="input-width"
+                    #projectCountLimit="ngModel" autocomplete="off">
+                <clr-control-error class="tooltip-content">
+                    {{ 'PROJECT.COUNT_QUOTA_TIP' | translate }}
+                </clr-control-error>
+            </clr-input-container>
+            <div class="clr-form-control" *ngIf="isSystemAdmin">
+                <label for="create_project_storage_limit" class="required clr-control-label">{{'PROJECT.STORAGE_QUOTA' | translate}}
+                    <clr-tooltip>
+                        <clr-icon clrTooltipTrigger shape="info-circle" size="24"></clr-icon>
+                        <clr-tooltip-content clrPosition="bottom-left" clrSize="lg" *clrIfOpen>
+                            <span>{{'PROJECT.QUOTA_UNLIMIT_TIP' | translate }}</span>
+                        </clr-tooltip-content>
+                    </clr-tooltip>
+                </label>
+                <div class="clr-control-container" [class.clr-error]="(projectStorageLimit.invalid && (projectStorageLimit.dirty || projectStorageLimit.touched))||projectStorageLimit.errors">
+                    <input type="text" id="create_project_storage_limit" [(ngModel)]="storageLimit" name="create_project_storage_limit" class="mr-10 clr-input"
+                        #projectStorageLimit="ngModel" autocomplete="off">
+                    <clr-icon class="clr-validate-icon" shape="exclamation-circle"></clr-icon>
+                    <div class="clr-select-wrapper">
+                        <select id="create_project_storage_limit_unit" name="create_project_storage_limit_unit" [(ngModel)]="storageLimitUnit">
+                            <ng-template ngFor let-quotaUnit [ngForOf]="quotaUnits" let-i="index">
+                                <option *ngIf="i>1" [value]="quotaUnit.UNIT">{{ quotaUnit.UNIT }}</option>
+                            </ng-template>
+                        </select>
+
+                    </div>
+                    <clr-control-error *ngIf="(projectStorageLimit.invalid && (projectStorageLimit.dirty || projectStorageLimit.touched))||projectStorageLimit.errors"
+                        class="tooltip-content">
+                        {{ 'PROJECT.STORAGE_QUOTA_TIP' | translate }}
+                    </clr-control-error>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline" (click)="onCancel()">{{'BUTTON.CANCEL' | translate}}</button>
+        <button type="button" class="btn btn-primary" [disabled]="!isValid" (click)="onSubmit()">{{'BUTTON.OK' | translate}}</button>
+    </div>
+</clr-modal>
